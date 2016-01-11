@@ -68,9 +68,8 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, ArticleFormRequest $request)
+    public function show($id)
     {
-        dd($request->get('category'));
         $article = Article::findOrFail($id);
         return view('articles.show')->withArticle($article);
     }

@@ -24,7 +24,7 @@
 
     @if($article->getCreator()->id === Auth::user()->id)
         <h5><a href= "{{ URL::route('article.edit', [$article->id]) }}">DO YOU WANT TO EDIT IT</a></h5>
-        @endif
+    @endif
     <h4>CREATED BY <a href="{{ URL::route('profile.show',array('id' => $article->getCreator()->profile->id)) }}"> {{ $article->getCreator()->firstname }}</a> </h4>
 
 
