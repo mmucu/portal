@@ -4,4 +4,4 @@ DB_CONNECTION : pgsql
 PORT : 5432
 USERNAME:PASSWORD@HOSTNAME:PORT/DATABASE
 
-DATABASE_URL:  postgres://bufoesnkjqzxpk:aZskGFpkF7TswPqsz_DODgr12U@ec2-54-227-247-161.compute-1.amazonaws.com:5432/d40asrnrg0tcev
+DATABASE_URL:  postgres://bufoesnkjqzxpk:aZskGFpkF7TswPqsz_DODgr12U@localhost:5432/d40asrnrg0tcev
