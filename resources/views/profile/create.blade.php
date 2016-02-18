@@ -32,11 +32,9 @@
         'placeholder' => 'which course are you taking')) !!}
     </div>
 
+    <h5>Year of study</h5>
     <div class="form-group">
-        {!! Form::label(' Year of Study ') !!}
-        {!! Form::text('year', null,
-        array( 'class' => 'form-control',
-        'placeholder' => 'which year are your in')) !!}
+        {!! Form::select('year',$years ,null,array('class' => 'selectbox')) !!}
     </div>
 
     <div class="form-group">

@@ -19,7 +19,7 @@ class JoinGroupController extends Controller
     {
         $group = Group::find($id);
         $user = Auth::user();
-        if($group->users->exists($user))
+        if($group->users->contains($user))
         {
             return \Redirect::route('groups.show',array($group->id))->with('message','you are already a member of the group');
         }

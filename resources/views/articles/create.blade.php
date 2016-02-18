@@ -16,9 +16,10 @@
     </script>
     <style>
         .selectbox{
-            background-color: #FF4E49;
+            background-color: #22223E;
         }
     </style>
+
     <h1>Create a new Article</h1>
 
     <ul>
@@ -36,14 +37,14 @@
     <div class="form-group">
         {!! Form::label('Title') !!}
         {!! Form::text('title', null,
-        array('required', 'class' => 'form-control',
+        array('required','class' => 'form-control',
         'placeholder' => 'what do you call it')) !!}
     </div>
 
+
     <h5>CATEGORIES</h5>
     <div class="form-group">
-        {!! Form::select('categories', $categories, null,
-        array('multiple' => 'multiple', 'name' => 'categories[]', 'class' => 'selectbox')) !!}
+        {!! Form::select('categories', $categories,null,array('class' => 'selectbox')) !!}
     </div>
 
     <div class="form-group">
@@ -55,6 +56,7 @@
 
     <div class="form-group">
         {!! Form::submit('Create Article', array('class' => 'btn btn-primary')) !!}
+        {!! Form::label('If it doesnt post, please refresh page') !!}}}
     </div>
 
     {!! Form::close() !!}

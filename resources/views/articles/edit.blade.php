@@ -16,7 +16,7 @@
 </script>
 <style>
     .selectbox{
-        background-color: #FF4E49;
+        background-color: #22223E;
     }
 </style>
     <h1>Edit Your Article</h1>
@@ -38,8 +38,8 @@
 
     <div class="form-group">
         {!! Form::label('Categories') !!}
-        {!! Form::select('categories', $categories, null,
-        array('multiple' => 'multiple', 'name' => 'categories[]', 'class' => 'selectbox')) !!}
+        {!! Form::select('categories[]', $categories, null,
+        array('class' => 'selectbox')) !!}
     </div>
 
     <div class="form-group">

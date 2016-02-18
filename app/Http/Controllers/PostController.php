@@ -87,10 +87,18 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::find($id);
-        $post->update(array('title' => $request->get('title'),
-            'body' => $request->get('body')
-        ));
+        $post = Post::findOrFail($id);
+
+        if($post->getUser()->id === Auth::user()->id ){
+            $post->update(array('title' => $request->get('title'),
+                'body' => $request->get('body'),
+            ));
+
+            return \Redirect::route('post.show', array('id' => $post->id))->with('message', 'You have updated the post');
+        }
+        else{
+            return \Redirect::route('post.show', array('id' => $post->id))->with('message', 'You cannot update the post');
+        }
     }
 
     /**

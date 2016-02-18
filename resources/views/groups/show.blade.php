@@ -13,8 +13,8 @@
 
     <h5>DESCRIPTION : {{ $group->description }}</h5>
 
-    @if($group->users()->count() > 0)
-        <h4>{{ $group->users()->count() }} MEMBERS</h4>
+    @if($group->users->count() > 0)
+        <h4>{{ $group->users->count() }} MEMBERS</h4>
         <div class="group-users">
             <h5>group members:</h5>
             @foreach($group->users as $member)

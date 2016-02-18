@@ -28,7 +28,8 @@
             @endforeach
         @endif
 
+    @if($post->getUser() === Auth::user()->id)
     <h5><a href= "{{ URL::route('post.edit', [$post->id]) }}">DO YOU WANT TO EDIT IT</a></h5>
-
+    @endif
 
 @endsection

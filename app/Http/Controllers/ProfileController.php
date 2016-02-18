@@ -5,6 +5,7 @@ namespace churchapp\Http\Controllers;
 use churchapp\Profile;
 use churchapp\Post;
 use churchapp\Image;
+use churchapp\YearOfStudy as Year;
 use Illuminate\Http\Request;
 
 use churchapp\Http\Requests;
@@ -50,7 +51,8 @@ class ProfileController extends Controller
             return \Redirect::route('profile.index')->with('message', 'You have already created your profile');
         }
         else{
-            return view('profile.create');
+            $years = Year::lists('year','id');
+            return view('profile.create')->with('years',$years);
         }
 
 
@@ -110,7 +112,8 @@ class ProfileController extends Controller
     public function edit()
     {
         $profile = Auth::user()->profile;
-        return view('profile.edit')->with('profile', $profile);
+        $years = Year::lists('year','id');
+        return view('profile.edit')->with('profile', $profile)->with('years', $years);
     }
 
     /**
@@ -125,6 +128,9 @@ class ProfileController extends Controller
         $prof_pic_name = null;
         if($request->file('image') !== null){
             $prof_pic_name = ProfileController::updateProfilePicture($request);
+        }
+        else{
+            $prof_pic_name = Auth::user()->profile->image_name;
         }
 
         $profile = Auth::user()->profile;

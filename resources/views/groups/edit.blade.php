@@ -32,6 +32,10 @@
     </div>
 
     <div class="form-group">
+        {!! Form::hidden('creator_id', Auth::user()->id)  !!}
+    </div>
+
+    <div class="form-group">
         {!! Form::submit('Edit Group', array('class' => 'btn btn-primary')) !!}
     </div>
 

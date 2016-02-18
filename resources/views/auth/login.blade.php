@@ -26,7 +26,7 @@
 
         <div class="form-group">
             {!! Form::label('Your Password') !!}
-            {!! Form::password('password', null, array('class' => 'form-control', 'placeholder' => 'Password')) !!}
+            {!! Form::password('password',array('class' => 'form-control', 'placeholder' => 'Password')) !!}
         </div>
 
         <div class="form-group">
@@ -40,6 +40,8 @@
         </div>
 
         <a href="/password/email">Forgot your password?</a>
+
+        <a href="/auth/register">OR SIGNUP</a>
         {!! Form::close() !!}
     </div>
 

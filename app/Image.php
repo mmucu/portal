@@ -9,7 +9,7 @@ use Input;
 
 class Image extends Model
 {
-    private $rules = ['imsge_name' => 'required|mimes:png,jpg'];
+    private $rules = ['image_name' => 'required|mimes:png,jpg'];
     protected $fillable = ['image_name'];
 
     public function imageable()

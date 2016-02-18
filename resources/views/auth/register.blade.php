@@ -36,12 +36,12 @@
 
         <div class="form-group">
             {!! Form::label('Your Password') !!}
-            {!! Form::password('password', null, array('class' => 'form-control', 'placeholder' => 'Password')) !!}
+            {!! Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password')) !!}
         </div>
 
         <div class="form-group">
             {!! Form::label('Confirm Password') !!}
-            {!! Form::password('password_confirmation', null, array('class' => 'form-control',
+            {!! Form::password('password_confirmation', array('class' => 'form-control',
                                 'placeholder' => 'Confirm your password')) !!}
         </div>
 

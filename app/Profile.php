@@ -20,11 +20,16 @@ class Profile extends Model implements SluggableInterface
                             'course' => 'required',
                                 'year' => 'required',
                                 ];
-    protected $fillable = ['reg_no','course','year','image_name','about', 'alias', 'hobbies'];
+    protected $fillable = ['reg_no','course','year_of_study_id','image_name','about', 'alias', 'hobbies'];
 
     public function user()
     {
         return $this->belongsTo('\churchapp\User');
+    }
+
+    public function year_of_study()
+    {
+        return $this->belongsTo('\churchapp\YearOfStudy');
     }
 
     public function images()
