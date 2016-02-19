@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use churchapp\Http\Requests;
 use churchapp\Http\Controllers\Controller;
+use churchapp\Http\Controllers\ProfileController;
+use churchapp\Http\Requests\ProfileFormRequest;
 use churchapp\Post;
 use Auth;
 
@@ -43,11 +45,27 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProfileFormRequest $request)
     {
-        $post = new Post(array('title' => $request->get('title'),
-            'body' => $request->get('body')
-        ));
+        $withImage = false;
+        if ($request->file('image') !== null)
+        {
+            $image_name = app('churchapp\Http\Controllers\ProfileController')->createProfilePicture($request);
+            $withImage = true;
+        }
+
+        if($withImage){
+            $post = new Post(array('title' => $request->get('title'),
+                'body' => $request->get('body'),
+                'image' => $image_name
+            ));
+        }
+        else{
+            $post = new Post(array('title' => $request->get('title'),
+                'body' => $request->get('body')
+            ));
+        }
+
         $user = Auth::user();
         $user->posts()->save($post);
 

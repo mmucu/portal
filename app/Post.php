@@ -8,7 +8,7 @@ class Post extends Model
 {
     private $rules = ['title' => 'required',
         'body' => 'required'];
-    protected $fillable = ['title', 'body'];
+    protected $fillable = ['title', 'body','image'];
 
     public function postable()
     {

@@ -37,7 +37,7 @@
 
     <h5>Do you want to create a post</h5>
 
-    {!! Form::open( array( 'route' => 'post.store', 'class' => 'form')) !!}
+    {!! Form::open( array( 'route' => 'post.store', 'class' => 'form', 'files' => true)) !!}
 
     <div class="form-group">
         {!! Form::label('Title') !!}
@@ -54,6 +54,11 @@
     </div>
 
     <div class="form-group">
+        {!! Form::label('Insert Image') !!}
+        {!! Form::file('image', null) !!}
+    </div>
+
+    <div class="form-group">
         {!! Form::submit('create Post', array('class' => 'btn btn-primary')) !!}
     </div>
 
@@ -65,6 +70,9 @@
         <hr>
         <h5>{{ $post->title }}</h5>
         <p>{{ $post->body }}</p>
+        @if($post->image)
+            {!! HTML::image('images/'.$post->image,null, array('width' => '25%','height' => '25%')) !!}
+            @endif
         <p><a href="{{ URL::route('post.edit',array('id' => $post->id)) }}">edit</a></p>
         <p class="date"> {{ $post->updated_at }}</p>
         @endforeach
