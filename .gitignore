@@ -5,3 +5,4 @@ Homestead.json
 .env
 
 /public/images/
+heroku database configs
