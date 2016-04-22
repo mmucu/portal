@@ -17,7 +17,7 @@ class AdminMiddleware
     {
         if($request->user()->type != 'A')
         {
-            return back()->with('error','not enough priviledges');
+            return back()->with('errors',['not enough priviledges']);
         }
         return $next($request);
     }
