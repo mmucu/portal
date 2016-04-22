@@ -24,4 +24,8 @@ class Post extends Model
     {
         return User::find($this->postable_id);
     }
+
+    public function updates(){
+        return $this->morphMany('\churchapp\Update', 'updatable');
+    }
 }

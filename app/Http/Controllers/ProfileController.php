@@ -1,12 +1,18 @@
 <?php
 
 namespace churchapp\Http\Controllers;
+use churchapp\imaging\ImageProcessorContract;
 
 use churchapp\Profile;
 use churchapp\Post;
 use churchapp\Image;
 use churchapp\YearOfStudy as Year;
+use churchapp\YearOfStudy;
 use Illuminate\Http\Request;
+use churchapp\Faculty;
+use App;
+use Input;
+use Validator;
 
 use churchapp\Http\Requests;
 use churchapp\Http\Requests\ProfileFormRequest;
@@ -21,8 +27,11 @@ class ProfileController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function __construct()
+    protected $imageProcessor;
+
+    public function __construct(ImageProcessorContract $contract)
     {
+        $this->imageProcessor = $contract;
         $this->middleware('auth'); //check if user is authentic
     }
 
@@ -30,8 +39,9 @@ class ProfileController extends Controller
     {
         if(Auth::user()->profile()->exists()){
             $profile = Auth::user()->profile;
-            $userPosts = Post::where('postable_id','=',''.Auth::user()->id.'')->get();
-            return view('profile.index')->with('profile',$profile)->with('userPosts',$userPosts);
+            $userImages = Image::where('imageable_id','=',''.Auth::user()->id.'')->orderBy('created_at','DESC')->take(10)->get();
+            $userPosts = Post::where('postable_id','=',''.Auth::user()->id.'')->orderBy('created_at','DESC')->take(10)->get();
+            return view('profile.index')->with('profile',$profile)->with('userPosts',$userPosts)->with("userImages", $userImages);
         }
         else{
             return \Redirect::route('profile.create')->with('message', 'You have not yet created your profile');
@@ -48,11 +58,15 @@ class ProfileController extends Controller
     public function create()
     {
         if(Auth::user()->profile()->exists()){
+
             return \Redirect::route('profile.index')->with('message', 'You have already created your profile');
+
+
         }
         else{
             $years = Year::lists('year','id');
-            return view('profile.create')->with('years',$years);
+            $faculties = Faculty::all();
+            return view('profile.create')->with('faculties',$faculties)->withYears($years);
         }
 
 
@@ -68,19 +82,24 @@ class ProfileController extends Controller
     {
         $prof_pic_name = null;
         if($request->file('image') !== null){
-            $prof_pic_name = ProfileController::createProfilePicture($request);
+            $prof_pic_name = ProfileController::updateProfilePicture($request);
+            $image = Image::where(['image_name' => $prof_pic_name])->first();
         }
         $profile = new Profile(array('reg_no' => $request->get('reg_no'),
             'course' => $request->get('course'),
-            'year' => $request->get('year'),
             'about' => $request->get('about'),
             'alias' => $request->get('alias'),
             'hobbies' => $request->get('hobbies'),
-            'image_name' => $prof_pic_name
+            'image_name' => $prof_pic_name,
+            'favorite_verse' => $request->get('favorite_verse'),
+            'mobile_number' => $request->get('mobile_number')
         ));
         $user = Auth::user(); // get the current user
         $user->profile()->save($profile);
-        $image = new Image(array('image' => $prof_pic_name));
+
+        $year_of_study = YearOfStudy::find($request->get('year'));
+        $year_of_study->members()->save($profile);
+
         $profile->images()->save($image);
 
         return \Redirect::route('profile.index')->with('message','Your profile has been created');
@@ -96,7 +115,7 @@ class ProfileController extends Controller
     {
         $profile = Profile::findBySlugOrId($id);
         $user = $profile->getUser();
-         if($profile->exists()){
+         if($profile){
              return view('profile.show')->with('profile', $profile)->with('user',$user);
          }// check if this method works, if yes replace the rest
         else{
@@ -113,7 +132,8 @@ class ProfileController extends Controller
     {
         $profile = Auth::user()->profile;
         $years = Year::lists('year','id');
-        return view('profile.edit')->with('profile', $profile)->with('years', $years);
+        $faculties = Faculty::all();
+        return view('profile.edit')->with('profile', $profile)->with('years', $years)->with('faculties', $faculties);
     }
 
     /**
@@ -126,25 +146,28 @@ class ProfileController extends Controller
     public function update(ProfileFormRequest $request)
     {
         $prof_pic_name = null;
+        $profile = Auth::user()->profile;
+
         if($request->file('image') !== null){
             $prof_pic_name = ProfileController::updateProfilePicture($request);
         }
-        else{
+        elseif($profile->image_name){
             $prof_pic_name = Auth::user()->profile->image_name;
+            $image = Image::where(['image_name' => $prof_pic_name])->first();
+            $profile->images()->save($image);
+
         }
 
-        $profile = Auth::user()->profile;
         $profile->update(array('reg_no' => $request->get('reg_no'),
             'course' => $request->get('course'),
             'year' => $request->get('year'),
             'about' => $request->get('about'),
             'alias' => $request->get('alias'),
             'hobbies' => $request->get('hobbies'),
-            'image_name' => $prof_pic_name
+            'image_name' => $prof_pic_name,
+            'favorite_verse' => $request->get('favorite_verse'),
+            'mobile_number' => $request->get('mobile_number')
         ));
-
-        $image = new Image(array('image' => $prof_pic_name));
-        $profile->images()->save($image);
 
         return \Redirect::route('profile.index', array($profile->id))->with('message', 'the profile has been updated');
     }
@@ -161,6 +184,7 @@ class ProfileController extends Controller
         $profile->delete();
     }
 
+    /*
     public function createProfilePicture(ProfileFormRequest $request){
         $prof_pic = $request->file('image');
         $extension = $prof_pic->getClientOriginalExtension();
@@ -170,13 +194,47 @@ class ProfileController extends Controller
 
     }
 
+    */
+
     public function updateProfilePicture(ProfileFormRequest $request){
-        $prof_pic = $request->file('image');
-        $extension = $prof_pic->getClientOriginalExtension();
-        $prof_pic_name = rand('111111','999999').'.'.$extension;
-        $prof_pic->move('images',$prof_pic_name);
-        return $prof_pic_name;
+        $return_value = ProfileController::uploadAndStore($request, $this->imageProcessor );
+        return $return_value;
     }
+
+    public function uploadAndStore(Request $request, ImageProcessorContract $contract){
+        $file = array('image' => Input::file('image'));
+        $rules = array('image' => 'required|image',);
+
+        $messages = ['image' => 'the file selected is not a valid image format'];
+
+        $validator = Validator::make($file,$rules, $messages);
+
+        if($validator->fails()){
+            return \Redirect::to('upload')->withInput()->withErrors($validator);
+        }
+
+
+        $this->validate($request, ['image' => 'image']);
+        $return_value = $contract->uploadAndStore($request);
+        if($return_value['name'])
+        {
+            return $return_value['name'];
+        }
+        elseif($return_value['error'])
+        {
+            return back()->with('error',$return_value['error']);
+        }
+        else
+        {
+            return back()->with('error',"something awefull happened, try again");
+        }
+
+
+    }
+
+
+
+
 }
 
 

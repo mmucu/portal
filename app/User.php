@@ -28,7 +28,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['firstname', 'lastname', 'email', 'password'];
+    protected $fillable = ['firstname', 'lastname', 'email', 'password','type'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -50,6 +50,18 @@ class User extends Model implements AuthenticatableContract,
     public function groups()
     {
         return $this->belongsToMany('\churchapp\Group')->withTimestamps();
+    }
+    public function getFirstnameAttribute($value){
+        return ucfirst($value);
+    }
+
+    public function getLastnameAttribute($value){
+        return ucfirst($value);
+    }
+
+    public function images()
+    {
+        return $this->morphMany('\churchapp\Image', 'imageable');
     }
 
 }

@@ -3,12 +3,17 @@
 namespace churchapp\Http\Controllers;
 
 use Illuminate\Http\Request;
+use churchapp\imaging\ImageProcessorContract;
+use Input;
+use Validator;
+use Redirect;
 
 use churchapp\Http\Requests;
 use churchapp\Http\Controllers\Controller;
 use churchapp\Http\Controllers\ProfileController;
 use churchapp\Http\Requests\ProfileFormRequest;
 use churchapp\Post;
+use churchapp\Update;
 use Auth;
 
 class PostController extends Controller
@@ -19,8 +24,9 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function __construct()
+    public function __construct(ImageProcessorContract $contract)
     {
+        $this->imageProcessor = $contract;
         $this->middleware('auth'); //check if user is authentic
     }
 
@@ -36,7 +42,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -47,30 +53,80 @@ class PostController extends Controller
      */
     public function store(ProfileFormRequest $request)
     {
-        $withImage = false;
-        if ($request->file('image') !== null)
+        if(Auth::user()->profile)
         {
-            $image_name = app('churchapp\Http\Controllers\ProfileController')->createProfilePicture($request);
-            $withImage = true;
+            $withImage = false;
+            if ($request->file('image') !== null)
+            {
+                //$image_name = app('churchapp\Http\Controllers\ProfileController')->updateProfilePicture($request);
+
+                $return_value = PostController::uploadAndStore($request, $this->imageProcessor);
+                if($return_value['error'])
+                {
+                    return back()->with('errors', $return_value['error'])->with('message', 'post not updated');
+                }
+                $image_name = $return_value['image'];
+                if(!$image_name)
+                {
+                    return back()->with('errors', "something went wrong, try again");
+                }
+                $withImage = true;
+            }
+
+            if($withImage){
+                $post = new Post(array('title' => $request->get('title'),
+                    'body' => $request->get('body'),
+                    'image' => $image_name
+                ));
+            }
+            else{
+                $post = new Post(array('title' => $request->get('title'),
+                    'body' => $request->get('body')
+                ));
+            }
+
+            $user = Auth::user();
+            $user->posts()->save($post);
+
+            $update = new Update(['creator_id' => Auth::user()->id ]);
+            $post->updates()->save($update);
+
+            return back()->with('message','thank you for sharing with us, be blessed');
+        }
+        else
+        {
+            $withImage = false;
+            if ($request->file('image') !== null)
+            {
+                //$image_name = app('churchapp\Http\Controllers\Image')->updateProfilePicture($request);
+                $image_name = PostController::uploadAndStore($request, $this->imageProcessor);
+                $withImage = true;
+                dd($image_name);
+            }
+
+            if($withImage){
+                $post = new Post(array('title' => $request->get('title'),
+                    'body' => $request->get('body'),
+                    'image' => $image_name
+                ));
+            }
+            else{
+                $post = new Post(array('title' => $request->get('title'),
+                    'body' => $request->get('body')
+                ));
+            }
+
+            $user = Auth::user();
+            $user->posts()->save($post);
+
+            $update = new Update(['creator_id' => Auth::user()->id ]);
+            dd($update);
+            $post->updates()->save($update);
+
+            return back()->with('message','thanks for sharing with us, be blessed, please remember to create you profile');
+        }
         }
 
-        if($withImage){
-            $post = new Post(array('title' => $request->get('title'),
-                'body' => $request->get('body'),
-                'image' => $image_name
-            ));
-        }
-        else{
-            $post = new Post(array('title' => $request->get('title'),
-                'body' => $request->get('body')
-            ));
-        }
-
-        $user = Auth::user();
-        $user->posts()->save($post);
-
-        return back()->with('message','new post has been created');
-    }
 
     /**
      * Display the specified resource.
@@ -127,6 +183,25 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
+
+    }
+
+    public function uploadAndStore(Request $request, ImageProcessorContract $contract){
+        $file = array('image' => Input::file('image'));
+        $rules = array('image' => 'required|image',);
+
+        $messages = ['image' => 'the file selected is not a valid image format'];
+
+        $validator = Validator::make($file,$rules, $messages);
+
+        if($validator->fails()){
+            $return_value['error'] = $validator->errors()->first();
+            return $return_value;
+        }
+
+        $return_value = $contract->uploadAndStore($request);
+        return $return_value;
+
 
     }
 }

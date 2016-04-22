@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Africa/Nairobi',
 
     /*
     |--------------------------------------------------------------------------
@@ -146,8 +146,14 @@ return [
         churchapp\Providers\RouteServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
+        Orchestra\Imagine\ImagineServiceProvider::class,
 
         'Cviebrock\EloquentSluggable\SluggableServiceProvider',
+        'Folklore\Image\ImageServiceProvider',
+
+        Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
+
+        churchapp\Providers\ImageServiceProvider::class,
 
     ],
 
@@ -200,6 +206,12 @@ return [
 
         'HTML' => Collective\Html\HtmlFacade::class,
         'Form'=> Collective\Html\FormFacade::class,
+
+        'Imagine' => Orchestra\Imagine\Facade::class,
+        'Image' => 'Folklore\Image\Facades\Image',
+        'Carbon' => 'Carbon\Carbon',
+
+        'Gravatar' => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
 
     ],
 

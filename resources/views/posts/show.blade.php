@@ -6,16 +6,21 @@
 
 @section('content')
 
-    <h4> SHOWING POST'S DETAILS</h4>
-    <h4>CREATED BY : <a href="{{ URL::route('profile.show',array('id' => $post->getUser()->profile->slug)) }}">{{ $post->getUser()->firstname }}</a> </h4>
+<div class="show-post">
 
-    <h4>TITLE : {{ $post->title }}</h4>
+    <h4>{{ $post->title }}</h4>
 
-    <p>BODY : {{ $post->body }}</p>
+    @if($post->image)
+        {!! HTML::image('images/'.$post->image,null, array('width' => '100%','height' => '100%')) !!}
+    @endif
+    <hr>
 
-    <h55>CREATED AT {{ $post->created_at }}</h55>
-    <h4>COMMENTS</h4>
+    <h5 style="color: #0044cc">{{ $post->body }}</h5>
+    <h5 style="float: right">{{ $post->created_at->diffForHumans() }} by <a href="{{ URL::route('profile.show',array('id' => $post->getUser()->profile->slug)) }}">{{ $post->getUser()->firstname }}</a></h5>
+    <hr>
     @if(count($post->comments) > 0)
+        <h5 style="color: indianred">comments</h5>
+        <hr>
         @foreach($post->comments as $comment)
             <div class="comment">
                 @if($comment->getUser()->exists())
@@ -23,13 +28,16 @@
                 @else
                     <p>Anonymous : {{ $comment->body }}</p>
                 @endif
-                <p class="time">{{ $comment->updated_at }}</p>
+                <p class="time">{{ $comment->updated_at->diffForHumans() }}</p>
             </div>
-            @endforeach
-        @endif
+            <hr>
+        @endforeach
+    @endif
 
     @if($post->getUser() === Auth::user()->id)
-    <h5><a href= "{{ URL::route('post.edit', [$post->id]) }}">DO YOU WANT TO EDIT IT</a></h5>
+        <h5><a href= "{{ URL::route('post.edit', [$post->id]) }}">DO YOU WANT TO EDIT IT</a></h5>
     @endif
+
+</div>
 
 @endsection

@@ -5,6 +5,7 @@ namespace churchapp\Http\Controllers;
 use Illuminate\Http\Request;
 use churchapp\Category;
 use churchapp\Article;
+use churchapp\Update;
 use churchapp\Http\Requests;
 use churchapp\Http\Requests\ArticleFormRequest;
 use churchapp\Http\Controllers\Controller;
@@ -52,6 +53,8 @@ class ArticleController extends Controller
             'body' => $request->get('body'),
             'created_by' => $request->get('creator_id')));
         $article->save();
+        $update = new Update(['creator_id' => Auth::user()->id ]);
+        $article->updates()->save($update);
         if(count($request->get('categories')) > 0){
             $article->categories()->attach($request->get('categories'));
         }

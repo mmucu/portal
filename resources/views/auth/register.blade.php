@@ -1,11 +1,21 @@
 
 @extends('layouts.master')
  @include('partials.navigation_auth')
+@section('left-side')
+    <div class="logo" style="padding-top: 25%; ">
+        <div class="logo-inner" style="border: solid; border-color: #ffffff; border-radius: 10%">
+            {!! HTML::image('images/mmucu_logo.png',null, array('width' => '100%')) !!}
+        </div>
+
+    </div>
+
+@endsection
 @section('content')
-    <div class="col-md-6">
+
+    <div class="">
         {!! Form::open(array('url' => '/auth/register', 'class' => 'form')) !!}
 
-        <h1>CHURCH APP create account</h1>
+        <h1>create a MMUCU account</h1>
 
         @if(count($errors) > 0)
             <div class="alert alert-danger">

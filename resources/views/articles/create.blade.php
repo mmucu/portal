@@ -11,22 +11,18 @@
         tinymce.init({
             selector:'textarea',
             plugins : ['advlist autolink lists link image  charmap print preview anchor', 'searchreplace visualblocks code fullscreen','insertdatetime media table contextmenu paste'],
-            toolbar : 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
+            toolbar : 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+            content_css: 'css/styles.css'
         });
     </script>
     <style>
-        .selectbox{
-            background-color: #22223E;
+        .article_body{
+            font-size: large;
         }
     </style>
 
-    <h1>Create a new Article</h1>
+    <h4>Create a new Article</h4>
 
-    <ul>
-        @foreach($errors->all() as $error )
-            <li> {{ $error }}</li>
-        @endforeach
-    </ul>
 
     {!! Form::open(array( 'route' => 'article.store', 'class' => 'form')) !!}
 
@@ -50,13 +46,12 @@
     <div class="form-group">
         {!! Form::label('Body') !!}
         {!! Form::textarea('body', null,
-        array('required', 'class' => 'form-control',
+        array('class' => 'form-control article',
         'placeholder' => 'say something good')) !!}
     </div>
 
     <div class="form-group">
         {!! Form::submit('Create Article', array('class' => 'btn btn-primary')) !!}
-        {!! Form::label('If it doesnt post, please refresh page') !!}}}
     </div>
 
     {!! Form::close() !!}

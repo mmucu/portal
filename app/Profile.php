@@ -18,9 +18,8 @@ class Profile extends Model implements SluggableInterface
     private $rules = [
                         'reg_no' => 'required',
                             'course' => 'required',
-                                'year' => 'required',
                                 ];
-    protected $fillable = ['reg_no','course','year_of_study_id','image_name','about', 'alias', 'hobbies'];
+    protected $fillable = ['reg_no','course','image_name','about', 'alias', 'hobbies','mobile_number','favorite_verse'];
 
     public function user()
     {

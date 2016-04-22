@@ -1,12 +1,23 @@
 
 @extends('layouts.master')
 @include('partials.navigation_auth')
+
+@section('left-side')
+    <div class="logo" style="padding-top: 25%; ">
+        <div class="logo-inner" style="border: solid; border-color: #ffffff; border-radius: 10%">
+            {!! HTML::image('images/mmucu_logo.png',null, array('width' => '100%')) !!}
+        </div>
+
+    </div>
+
+@endsection
+
 @section('content')
 
-    <div class="col-md-6">
+    <div class="">
         {!! Form::open(array('url' => '/auth/login', 'class' => 'form')) !!}
 
-        <h1>Sign into a CHURCH APP account</h1>
+        <h1>Sign into your MMUCU ACCOUNT</h1>
         @if(count($errors) > 0)
             <div class="alert alert-danger">
                 There were some problems login into your account
@@ -37,11 +48,11 @@
 
         <div class="form-group">
             {!! Form::submit('Login', array('class' => 'btn btn-primary')) !!}
+            <a href="/auth/register" class="btn btn-default">OR SIGNUP</a>
         </div>
 
         <a href="/password/email">Forgot your password?</a>
 
-        <a href="/auth/register">OR SIGNUP</a>
         {!! Form::close() !!}
     </div>
 

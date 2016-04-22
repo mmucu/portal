@@ -26,8 +26,8 @@ return [
     |
     */
 
-    //'default' => env('DB_CONNECTION', 'pgsql'),
-    'default' => env('pgsql'),
+    'default' => env('DB_CONNECTION', 'mysql'),
+    //'default' => env('pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,7 +66,7 @@ return [
         ],
 
         //incase of anything, heres the original
-/*/
+
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
@@ -78,7 +78,7 @@ return [
             'schema'   => 'public',
         ],
 //edited one
-/*/
+/*
 
         'pgsql' => [
             'driver'   => 'pgsql',

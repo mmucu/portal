@@ -14,7 +14,7 @@
                 width: 100%;
                 display: table;
                 font-weight: 100;
-                font-family: 'Lato';
+                font-family: 'Jura';
             }
 
             .container {
@@ -32,9 +32,7 @@
                 color: #35DAFA;
             }
             .navbar {
-                background-color: transparent;
-                background: transparent;
-                border-color: transparent;
+
             }
 
             .navbar li { color: #000000
@@ -115,6 +113,20 @@
         @endif
     </div>
 
+    <div class="left-side">
+        <a href="{{ url('profile') }}"> <h2>members</h2> </a>
+        @if($users->count() > 0)
+            <ul>
+                @foreach($users as $user)
+                    <li><a href="{{ URL::route('profile.show', array('id' => $user->profile->id)) }}">{{ $user->firstname }} {{ $user->lastname }}</a> </li>
+                @endforeach
+                <a href="{{ url('profile') }}"> <h5>More people</h5> </a>
+            </ul>
+        @else
+            <h3> No users present !!</h3>
+        @endif
+    </div>
+
     @endsection
 
 
@@ -126,6 +138,14 @@
         @endif
                 <div class="title">THE MMUCU CHURCH</div>
     <hr>
+
+
+
+
+
+
+
+
                 <h3>{{ $inspire }}</h3>
     <h3 class="header"><b>POSTS BY OTHERS</b></h3>
     @foreach($posts as $post)
@@ -133,6 +153,9 @@
             <h5 class="post-user"><a href="{{ URL::route('profile.show',array('id' => $post->getUser()->profile->slug)) }}">{{ $post->getUser()->firstname }} {{ $post->getUser()->lastname }}</a> said:</h5>
             <h5 class="post-title">{{  $post->title }}</h5>
             <p class="post-body">{{  str_limit($post->body,200,'...') }}<a href="{{ URL::route('post.show',array('id' => $post->id)) }}">view post</a> </p>
+            @if($post->image)
+                {!! HTML::image('images/'.$post->image,null, array('width' => '25%','height' => '25%')) !!}
+            @endif
             <p class="time"> on {{ $post->updated_at }}</p>
 
             @if(Auth::check())

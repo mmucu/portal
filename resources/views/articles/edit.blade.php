@@ -45,7 +45,7 @@
     <div class="form-group">
         {!! Form::label('Body') !!}
         {!! Form::textarea('body', null,
-        array('required', 'class' => 'form-control',
+        array('class' => 'form-control',
         'placeholder' => $article->body)) !!}
     </div>
 

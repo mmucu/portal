@@ -6,26 +6,21 @@
 @endsection
 
 @section('content')
-    <h2>YOUR ARE WELCOMED TO JOIN ANY OF OUR GROUPS</h2>
+    <h2>MINISTRIES</h2>
 
-    <table>
-        <tr>
-            <td>NAME</td>
-            <td>DESCRIPTION</td>
-            <td>SHOW CASE</td>
-            <td>JOIN</td>
-        </tr>
 
-        @foreach($groups as $group)
-        <tr>
-                <td>{{ $group->name }}</td>
-                <td>{{ $group->description }}</td>
-                <td><a href="{{ URL::route('groups.show',[$group->id]) }}">DETAILS</a> </td>
-            <td><a href="{{ url('groups/join',[$group->id]) }}">JOIN</a> </td>
-        </tr>
+    @foreach($groups as $group)
+        <div class="show-post">
+            <h4>{{ $group->name }}</h4>
+            <p>{{ $group->description }}</p>
+            <h5><a href="{{ URL::route('ministries.show',[$group->id]) }}">view ministry</a> </h5>
+            <a class="btn btn-default" href="{{ url('groups/join',[$group->id]) }}">JOIN</a>
+        </div>
+        <hr>
+
             @endforeach
-    </table>
 
-    <a class="btn btn-primary" href="{{ URL::route('groups.create') }}">Create new Group</a>
+
+    <a class="btn btn-primary" href="{{ URL::route('ministries.create') }}">Create a new Ministry</a>
 
 @endsection

@@ -21,9 +21,15 @@ class JoinGroupController extends Controller
         $user = Auth::user();
         if($group->users->contains($user))
         {
-            return \Redirect::route('groups.show',array($group->id))->with('message','you are already a member of the group');
+            return \Redirect::route('ministries.show',array($group->id))->with('message','you are already a member of the group');
         }
         $group->users()->save($user);
-        return \Redirect::route('groups.show',array($group->id))->with('message','you have joined the group');
+        return \Redirect::route('ministries.show',array($group->id))->with('message','you have joined the group');
     }
+
+    public function showMembers(){
+        $members = \churchapp\Profile::all();
+        return view('members.index')->withMembers($members);
+    }
+
 }

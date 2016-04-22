@@ -16,4 +16,8 @@ class Article extends Model
     {
         return User::find($this->created_by);
     }
+
+    public function updates(){
+        return $this->morphMany('\churchapp\Update', 'updatable');
+    }
 }

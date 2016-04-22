@@ -15,7 +15,15 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
          //$this->call(PostTableSeeder::class);
-        $this->call(ArticleTableSeeder::class);
+        //DB::table('faculties')->delete();
+        //DB::table('departments')->delete();
+        //DB::table('years')->delete();
+        //DB::table('categories')->delete();
+        DB::table('updates')->delete();
+        //$this->call(DepartmentTableSeeder::class);
+        //$this->call(YearOfStudyTableSeeder::class);
+        //$this->call(CategoryTableSeeder::class);
+        $this->call(UpdatesTableSeeder::class);
 
 
         Model::reguard();

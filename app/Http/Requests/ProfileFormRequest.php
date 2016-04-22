@@ -25,7 +25,15 @@ class ProfileFormRequest extends Request
     public function rules()
     {
         return [
+            'year' => 'exists:years,id',
+            'course' => 'exists:departments,name',
 
+        ];
+    }
+
+    public function messages(){
+        return [
+          'image.image' => 'The selected file is not a valid image file'
         ];
     }
 }
